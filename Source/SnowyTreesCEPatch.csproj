@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>SnowyTreesCEPatch</RootNamespace>
+    <AssemblyName>SnowyTreesCEPatch</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <DebugType>none</DebugType>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\Assemblies</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <!--
+    References to the patched mods' assemblies. Point these properties at the
+    compiled mod assemblies on your machine, e.g.:
+      dotnet build -p:CombatExtendedDll="C:/Mods/CombatExtended/Assemblies/CombatExtended.dll" \
+                   -p:SnowyTreesDll="C:/Mods/Nandonalts-Snowy-Trees/1.6/Assemblies/Nandonalt_SnowyTrees.dll"
+  -->
+  <ItemGroup Condition="'$(CombatExtendedDll)' != ''">
+    <Reference Include="CombatExtended">
+      <HintPath>$(CombatExtendedDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(SnowyTreesDll)' != ''">
+    <Reference Include="Nandonalt_SnowyTrees">
+      <HintPath>$(SnowyTreesDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CombatExtended">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2890901044\Assemblies\CombatExtended.dll</HintPath>
+    </Reference>
+    <Reference Include="Nandonalt_SnowyTrees">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\1322101066\1.6\Assemblies\Nandonalt_SnowyTrees.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityStubs">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\UnityStubs.dll</HintPath>
+    </Reference>
+    <Reference Include="Waylith">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Waylith.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CopyModsFolderToOutput" AfterTargets="Build">
+    <ItemGroup>
+      <ModsFolder Include="$(RimWorldModsDir)\*" Condition="'$(RimWorldModsDir)' != ''" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ModsFolder)" DestinationFolder="$(OutputPath)" Condition="'$(RimWorldModsDir)' != ''" />
+  </Target>
+
+</Project>
